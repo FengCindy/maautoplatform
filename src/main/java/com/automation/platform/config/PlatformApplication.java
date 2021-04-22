@@ -1,12 +1,16 @@
-package com.automation.platform;
+package com.automation.platform.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
+@ComponentScan("com.automation")
 @SpringBootApplication
+@MapperScan("com.automation.platform.mapper")
 public class PlatformApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformApplication.class);
