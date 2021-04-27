@@ -3,6 +3,6 @@
 
 #快捷键： ptrp
 
-GET http://localhost:8090/ebook/list
+GET http://localhost:8090/ebook/list?name=Spring
 
 ###
