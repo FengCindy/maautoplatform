@@ -5,6 +5,7 @@ import com.automation.platform.domain.EbookExample;
 import com.automation.platform.mapper.EbookMapper;
 import com.automation.platform.req.EbookReq;
 import com.automation.platform.resp.EbookResp;
+import com.automation.platform.resp.PageResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class EbookService {
     @Resource //@Autowired
     private EbookMapper ebookMapper;
 
-    public List<EbookResp> list(EbookReq req){
+    public PageResp<EbookResp> list(EbookReq req){
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName())){
@@ -44,6 +45,9 @@ public class EbookService {
             BeanUtils.copyProperties(ebook,ebookResp);
             respList.add(ebookResp);
         }
-        return respList;
+        PageResp<EbookResp> pageResp = new PageResp<>();
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(respList);
+        return pageResp;
     }
 }
