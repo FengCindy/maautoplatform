@@ -24,19 +24,13 @@
             </a-button>
           </a-space>
         </template>
-
-
       </a-table>
-    >
-      <div class="about">
-        <h1>电子书管理</h1>
-      </div>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script lang="ts">
-  import { defineComponent,onMounted,ref,reactive,toRef} from 'vue';
+  import { defineComponent,onMounted,ref} from 'vue';
   import axios from 'axios';
 
   export default defineComponent({
@@ -45,7 +39,7 @@
       const ebooks = ref();
       const pagination = ref ({
         current: 1,
-        pageSize: 2,
+        pageSize: 10,
         total: 0
       });
       const loading = ref(false);
@@ -93,7 +87,7 @@
        **/
       const handleQuery = (params: any) => {
         loading.value = true;
-        axios.get("/ebook/list", params).then((response) => {
+        axios.get("ebook/list", params).then((response) => {
           loading.value = false;
           const data = response.data;
           ebooks.value = data.content;
