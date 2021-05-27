@@ -75,29 +75,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,onMounted,ref,reactive,toRef} from 'vue';
+import { defineComponent,onMounted,ref} from 'vue';
 import axios from 'axios';
 
-const listData: Record<string, string>[] = [];
-
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-            'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+// const listData: Record<string, string>[] = [];
+//
+// for (let i = 0; i < 23; i++) {
+//   listData.push({
+//     href: 'https://www.antdv.com/',
+//     title: `ant design vue part ${i}`,
+//     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+//     description:
+//             'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+//     content:
+//             'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+//   });
+// }
 
 export default defineComponent({
   name: 'Home',
   setup(){
     console.log("setup");
     const ebooks = ref();
-    const ebooks1 = reactive({books : []});
+    // const ebooks1 = reactive({books : []});
+    const loading = ref(false);
 
     const pagination = {
       onChange: (page: number) => {
@@ -111,24 +112,48 @@ export default defineComponent({
       { type: 'MessageOutlined', text: '2' },
     ];
 
+    /**
+     * 数据查询
+     **/
+    const handleQuery = (params: any) => {
+      loading.value = true;
+      axios.get("ebook/all",
+              {params:
+                        {
+                          page: params.page,
+                          size: params.size
+                        }}).then((response) => {
+        // loading.value = false;
+        const data = response.data;
+        ebooks.value = data.content;
+      });
+    };
+
+    // onMounted(() =>{
+    //   console.log("onMounted2222");
+    //   axios.get("/ebook/all",{params:{
+    //     page:1,
+    //     size:100,
+    //     }}).then((response) =>{
+    //     const data = response.data;
+    //     ebooks.value = data.content.list;
+    //     console.log(response);
+    // })
     onMounted(() =>{
-      console.log("onMounted2222");
-      axios.get("/ebook/list",{params:{
+      handleQuery({
         page:1,
         size:100,
-        }}).then((response) =>{
-        const data = response.data;
-        ebooks.value = data.content.list;
-        console.log(response);
-    })
-  });
+      })
+    });
 
     return{
       ebooks,
-      ebooks2: toRef(ebooks1,"books"),
-      listData,
+      // ebooks2: toRef(ebooks1,"books"),
+      // listData,
       pagination,
       actions,
+      loading,
+      handleQuery
     }
   }
 });

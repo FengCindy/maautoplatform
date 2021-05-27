@@ -6,3 +6,6 @@
 GET http://localhost:8090/ebook/list?page=1&size=4
 
 ###
+GET http://127.0.0.1:8090/ebook/all
+
+###
