@@ -16,7 +16,7 @@
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-              <a-button type="primary">
+              <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
             <a-button type="danger">
@@ -27,6 +27,30 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+  <a-modal
+          title="电子书表单"
+          v-model:visible="modalVisible"
+          :confirm-loading="confirmModalLoading"
+          @ok="handleModalOk"
+  >
+    <a-form :model="ebook" :label-col="{span : 6}" :wrapper-col="{span : 18}">
+      <a-form-item label="封面">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="分类一">
+        <a-input v-model:value="ebook.category1Id" />
+      </a-form-item>
+      <a-form-item label="分类二">
+        <a-input v-model:value="ebook.category2Id" />
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input v-model:value="ebook.desc" type="textarea"/>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -112,6 +136,25 @@
             size: pagination.pageSize
           })
         };
+//-----------------------------表单---------------------------------------
+      const  ebook = ref({});
+      const modalText = ref('Content of the modal');
+      const modalVisible = ref(false);
+      const confirmModalLoading = ref(false);
+      const edit = (record:any) => {
+        modalVisible.value = true;
+        ebook.value = record
+      };
+
+      const handleModalOk = () => {
+        modalText.value = 'The modal will be closed after two seconds';
+        confirmModalLoading.value = true;
+        setTimeout(() => {
+          modalVisible.value = false;
+          confirmModalLoading.value = false;
+        }, 2000);
+      };
+
         onMounted(() => {
           handleQuery({
             page: 1,
@@ -124,7 +167,13 @@
           pagination,
           columns,
           loading,
-          handleTableChange
+          handleTableChange,
+          modalText,
+          modalVisible,
+          confirmModalLoading,
+          edit,
+          handleModalOk,
+          ebook
         }
       }
       });
