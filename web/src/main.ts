@@ -10,7 +10,7 @@ import axios from "axios";
 axios.defaults.baseURL=process.env.VUE_APP_SERVER;
 
 /**
- *
+ *axios拦截器
  */
 axios.interceptors.request.use(function (config) {
     console.log('请求参数：', config);
