@@ -14,9 +14,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar" />
         </template>
-        <template v-slot:action="{text, record }">
+        <template v-slot:action="{ text, record }">
           <a-space size="small">
-              <a-button type="primary" @click="edit">
+              <a-button type="primary">
                 编辑
               </a-button>
             <a-button type="danger">
@@ -27,15 +27,8 @@
       </a-table>
     </a-layout-content>
   </a-layout>
-  <a-Modal
-          title="电子书表单"
-          v-model:visible="modalVisible"
-          :confirm-loading="modalLoading"
-          @ok="handleModalOk"
-  >
-    <p>TEST</p>
-  </a-Modal>
 </template>
+
 <script lang="ts">
   import { defineComponent,onMounted,ref} from 'vue';
   import axios from 'axios';
@@ -88,7 +81,8 @@
           slots: {customRender: 'action'}
         }
       ];
-        /**
+
+      /**
        * 数据查询
        **/
       const handleQuery = (params: any) => {
@@ -118,24 +112,6 @@
             size: pagination.pageSize
           })
         };
-//-------------------表单----------------------
-      const modalVisible = ref(false);
-      const modalLoading = ref(false);
-
-      const edit = () => {
-        modalVisible.value = true;
-      };
-      const handleModalOk = () => {
-        modalLoading.value = true;
-        setTimeout(() => {
-          modalVisible.value = false;
-          modalLoading.value = false;
-        }, 2000);
-      };
-      const handleCancel = () => {
-        console.log('Clicked cancel button');
-        modalVisible.value = false;
-      };
         onMounted(() => {
           handleQuery({
             page: 1,
@@ -148,13 +124,7 @@
           pagination,
           columns,
           loading,
-          handleTableChange,
-          edit,
-          modalVisible,
-          modalLoading,
-          handleModalOk,
-          handleCancel
-
+          handleTableChange
         }
       }
       });
