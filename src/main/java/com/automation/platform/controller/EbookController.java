@@ -1,13 +1,12 @@
 package com.automation.platform.controller;
 
-import com.automation.platform.req.EbookReq;
+import com.automation.platform.req.EbookQueryReq;
+import com.automation.platform.req.EbookSaveReq;
 import com.automation.platform.resp.CommonResp;
-import com.automation.platform.resp.EbookResp;
+import com.automation.platform.resp.EbookQueryResp;
 import com.automation.platform.resp.PageResp;
 import com.automation.platform.service.EbookService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,21 +19,29 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/all")
-    public CommonResp List(EbookReq req)
+    public CommonResp all(EbookQueryReq req)
     {
-        CommonResp<List<EbookResp>> respAll = new CommonResp<>();
-        List<EbookResp> all = ebookService.all(req);
+        CommonResp<List<EbookQueryResp>> respAll = new CommonResp<>();
+        List<EbookQueryResp> all = ebookService.all(req);
         respAll.setContent(all);
         return respAll;
     }
 
 
     @GetMapping("/list")
-    public CommonResp list(EbookReq req)
+    public CommonResp list(EbookQueryReq req)
     {
-        CommonResp<PageResp<EbookResp>> resp = new CommonResp<>();
-        PageResp<EbookResp> list = ebookService.list(req);
+        CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
+        PageResp<EbookQueryResp> list = ebookService.list(req);
         resp.setContent(list);
+        return resp;
+    }
+
+    @PostMapping("/save")
+    public CommonResp save(@RequestBody EbookSaveReq req)
+    {
+        CommonResp resp = new CommonResp<>();
+        ebookService.save(req);
         return resp;
     }
 }

@@ -4,9 +4,11 @@ import com.automation.platform.domain.Ebook;
 import com.automation.platform.domain.EbookExample;
 import com.automation.platform.domain.EbookExample.Criteria;
 import com.automation.platform.mapper.EbookMapper;
-import com.automation.platform.req.EbookReq;
-import com.automation.platform.resp.EbookResp;
+import com.automation.platform.req.EbookQueryReq;
+import com.automation.platform.req.EbookSaveReq;
+import com.automation.platform.resp.EbookQueryResp;
 import com.automation.platform.resp.PageResp;
+import com.automation.platform.util.CopyUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -26,7 +28,7 @@ public class EbookService {
     @Resource //@Autowired
     private EbookMapper ebookMapper;
 
-    public PageResp<EbookResp> list(EbookReq req){
+    public PageResp<EbookQueryResp> list(EbookQueryReq req){
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName())){
@@ -38,20 +40,20 @@ public class EbookService {
         LOG.info("总行数:{}", pageInfo.getTotal());
         LOG.info("总页数:{}",pageInfo.getPages());
 
-        List<EbookResp> respList = new ArrayList<>();
+        List<EbookQueryResp> respList = new ArrayList<>();
         //快捷键  1：fori  2:iter
         for (Ebook ebook : ebooklist) {
-            EbookResp ebookResp = new EbookResp();
-            BeanUtils.copyProperties(ebook,ebookResp);
-            respList.add(ebookResp);
+            EbookQueryResp ebookQueryResp = new EbookQueryResp();
+            BeanUtils.copyProperties(ebook, ebookQueryResp);
+            respList.add(ebookQueryResp);
         }
-        PageResp<EbookResp> pageResp = new PageResp<>();
+        PageResp<EbookQueryResp> pageResp = new PageResp<>();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(respList);
         return pageResp;
     }
 
-    public List<EbookResp> all(EbookReq req){
+    public List<EbookQueryResp> all(EbookQueryReq req){
         EbookExample ebookExampleAll;
         ebookExampleAll = new EbookExample();
         Criteria criteria = ebookExampleAll.createCriteria();
@@ -63,15 +65,24 @@ public class EbookService {
         LOG.info("总行数:{}", pageInfo.getTotal());
         LOG.info("总页数:{}",pageInfo.getPages());
 
-        List<EbookResp> respList = new ArrayList<>();
+        List<EbookQueryResp> respList = new ArrayList<>();
         //快捷键  1：fori  2:iter
         for (Ebook ebook : ebooklistAll) {
-            EbookResp ebookResp = new EbookResp();
-            BeanUtils.copyProperties(ebook,ebookResp);
-            respList.add(ebookResp);
+            EbookQueryResp ebookQueryResp = new EbookQueryResp();
+            BeanUtils.copyProperties(ebook, ebookQueryResp);
+            respList.add(ebookQueryResp);
         }
         return respList;
     }
 
-
+    public void save(EbookSaveReq req){
+        Ebook ebook = CopyUtil.copy(req,Ebook.class);
+        if(ObjectUtils.isEmpty(req.getId())){
+            //新增
+            ebookMapper.insert(ebook);
+        }
+        else{
+            //更新
+            ebookMapper.updateByPrimaryKey(ebook);}
+    }
 }

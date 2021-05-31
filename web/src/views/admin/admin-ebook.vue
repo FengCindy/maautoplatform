@@ -47,7 +47,7 @@
         <a-input v-model:value="ebook.category2Id" />
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.desc" type="textarea"/>
+        <a-input v-model:value="ebook.description" type="textarea"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -141,18 +141,27 @@
       const modalText = ref('Content of the modal');
       const modalVisible = ref(false);
       const confirmModalLoading = ref(false);
+
+      const handleModalOk = () => {
+        // modalText.value = 'The modal will be closed after two seconds';
+        confirmModalLoading.value = true;
+        axios.post("ebook/save",ebook.value).then((response) => {
+          const data = response.data; //data = commonResp
+          if(data.success){
+            modalVisible.value = false;
+            confirmModalLoading.value = false;
+            //重新加载列表
+            handleQuery({
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            });
+          }
+        })
+      };
+
       const edit = (record:any) => {
         modalVisible.value = true;
         ebook.value = record
-      };
-
-      const handleModalOk = () => {
-        modalText.value = 'The modal will be closed after two seconds';
-        confirmModalLoading.value = true;
-        setTimeout(() => {
-          modalVisible.value = false;
-          confirmModalLoading.value = false;
-        }, 2000);
       };
 
         onMounted(() => {

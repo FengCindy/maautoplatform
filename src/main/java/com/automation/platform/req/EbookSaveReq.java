@@ -1,6 +1,6 @@
-package com.automation.platform.resp;
+package com.automation.platform.req;
 
-public class EbookResp {
+public class EbookSaveReq {
     private Long id;
 
     private String name;
