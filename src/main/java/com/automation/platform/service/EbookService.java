@@ -9,6 +9,7 @@ import com.automation.platform.req.EbookSaveReq;
 import com.automation.platform.resp.EbookQueryResp;
 import com.automation.platform.resp.PageResp;
 import com.automation.platform.util.CopyUtil;
+import com.automation.platform.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class EbookService {
     private static final Logger LOG = LoggerFactory.getLogger(EbookService.class);
     @Resource //@Autowired
     private EbookMapper ebookMapper;
+
+    @Resource
+    private SnowFlake snowFlake;
 
     public PageResp<EbookQueryResp> list(EbookQueryReq req){
         EbookExample ebookExample = new EbookExample();
@@ -75,11 +79,16 @@ public class EbookService {
         return respList;
     }
 
+    /**
+     * save
+     * @param req
+     */
     public void save(EbookSaveReq req){
         Ebook ebook = CopyUtil.copy(req,Ebook.class);
         if(ObjectUtils.isEmpty(req.getId())){
             //新增
-            ebookMapper.insert(ebook);
+            ebook.setId(snowFlake.nextId());
+            ebookMapper.insertSelective(ebook);
         }
         else{
             //更新

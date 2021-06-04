@@ -3,6 +3,11 @@
     <a-layout-content
             :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+      <p>
+        <a-button type="primary" @click="add()" size="large">
+          新增
+        </a-button>
+      </p>
       <a-table
         :columns="columns"
         :row-key="record => record.id"
@@ -106,7 +111,7 @@
         }
       ];
 
-      /**
+      /*
        * 数据查询
        **/
       const handleQuery = (params: any) => {
@@ -126,7 +131,7 @@
           pagination.value.total=data.content.total;
         });
       };
-        /**
+        /*
          * 表格点击页码时触发
          */
         const handleTableChange = (pagination: any) => {
@@ -164,7 +169,13 @@
         ebook.value = record
       };
 
-        onMounted(() => {
+      const add = () => {
+        modalVisible.value = true;
+        ebook.value = {};
+      };
+
+
+      onMounted(() => {
           handleQuery({
             page: 1,
             size: pagination.value.pageSize
@@ -181,6 +192,7 @@
           modalVisible,
           confirmModalLoading,
           edit,
+          add,
           handleModalOk,
           ebook
         }
