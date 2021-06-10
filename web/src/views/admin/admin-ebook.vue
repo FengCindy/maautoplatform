@@ -24,7 +24,7 @@
               <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
-            <a-button type="danger">
+            <a-button type="danger" @click="handleDelete(record.id)">
                 删除
             </a-button>
           </a-space>
@@ -148,7 +148,7 @@
       const confirmModalLoading = ref(false);
 
       const handleModalOk = () => {
-        // modalText.value = 'The modal will be closed after two seconds';
+        modalText.value = 'The modal will be closed after two seconds';
         confirmModalLoading.value = true;
         axios.post("ebook/save",ebook.value).then((response) => {
           const data = response.data; //data = commonResp
@@ -174,6 +174,20 @@
         ebook.value = {};
       };
 
+      const handleDelete = (id : number) => {
+        axios.delete("ebook/delete/" + id
+      ).then((response) => {
+          const data =  response.data;
+          if(data.success){
+            //重新加载列表
+            handleQuery({
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            });
+          }
+        })
+      };
+
 
       onMounted(() => {
           handleQuery({
@@ -194,7 +208,8 @@
           edit,
           add,
           handleModalOk,
-          ebook
+          ebook,
+          handleDelete
         }
       }
       });
